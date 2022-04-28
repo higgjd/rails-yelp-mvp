@@ -1,11 +1,14 @@
 class RestaurantsController < ApplicationController
-  before_action :find_restaurant, only: [:show]
+  # before_action :find_restaurant, only: [:show]
 
   def index
     @restaurants = Restaurant.all
   end
 
-  def show; end
+  def show
+    @restaurant = Restaurant.find(params[:id])
+    @review = Review.new
+  end
 
   def new
     @restaurant = Restaurant.new
@@ -13,20 +16,20 @@ class RestaurantsController < ApplicationController
 
   def create
     @restaurant = Restaurant.new(restaurant_params)
-    @restaurant.save
-    redirect_to restaurant_path(@restaurant.id)
-    # else
-    #   render :new
-    # end
+    if @restaurant.save
+      redirect_to restaurant_path(@restaurant)
+    else
+      render :new
+    end
   end
 
   private
 
-  def find_restaurant
-    @restaurant = Restaurant.find(params[:id])
-  end
+  # def find_restaurant
+  #   @restaurant = Restaurant.find(params[:id])
+  # end
 
   def restaurant_params
-    params.require(:restaurant).permit(:id, :name, :address, :category, :phone_number)
+    params.require(:restaurant).permit(:name, :address, :category, :phone_number)
   end
 end
